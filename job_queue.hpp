@@ -20,11 +20,13 @@ class job_queue {
 public:
   using job_t = std::function<void()>;
 
-  explicit job_queue(int thread_count) {
+  explicit job_queue(std::uint32_t thread_count) {
     std::lock_guard lock(mutex_);
     for (int i = 0; i < thread_count; i++) {
       threads_.emplace_back([this]{
         while(this->running_) {
+          // keeps cpu usage down
+          std::this_thread::sleep_for(std::chrono::milliseconds(5));
           this->run_tick();
         }
       });
@@ -33,13 +35,7 @@ public:
   }
 
   ~job_queue() {
-    {
-      std::lock_guard lock(mutex_);
-      running_ = false;
-    }
-    // give threads time to shutdown
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    std::lock_guard lock(mutex_);
+    running_ = false;
     for (auto&& thread : threads_) {
       if (thread.joinable())
         thread.join();
@@ -65,14 +61,14 @@ private:
   std::vector<std::thread> threads_;
   std::queue<job_t> jobs_;
   std::mutex mutex_;
-  bool running_ = true;
+  std::atomic<bool> running_ = true;
 private:
   void run_tick() {
     try {
       job_t job = nullptr;
       {
-        std::lock_guard lock(mutex_);
         if (!jobs_.empty()) {
+          std::lock_guard lock(mutex_);
           job = jobs_.front();
           jobs_.pop();
         }

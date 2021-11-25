@@ -7,7 +7,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_subdirectory(vendor/cpr)
 
-add_executable(cbsodata_dumper main.cpp job_queue.hpp process.cpp process.hpp json.hpp)
+add_executable(cbsodata_dumper main.cpp job_queue.hpp process.cpp process.hpp json.hpp util.hpp)
 
 target_include_directories(cbsodata_dumper PRIVATE vendor/rapidjson/include)
 
