@@ -7,11 +7,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download repo
-      run: git clone https://github.com/X-rays5/cbsodata_dumper.git --recursive
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     
     - name: Create build dir
-      run: cd cbsodata_dumper && mkdir build
+      run: mkdir build
     
     - name: Setup CMake
       run: cmake . -B build -DCMAKE_BUILD_TYPE=Release
