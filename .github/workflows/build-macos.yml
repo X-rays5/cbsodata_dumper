@@ -1,4 +1,4 @@
-name: CMake
+name: Build macOS
 
 on:
   [push, pull_request]
