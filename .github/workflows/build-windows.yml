@@ -10,8 +10,11 @@ jobs:
     - name: Download repo
       run: git clone https://github.com/X-rays5/cbsodata_dumper.git --recursive
     
+    - name: Create build dir
+      run: cd cbsodata_dumper && mkdir build
+    
     - name: Setup CMake
-      run: cd cbsodata_dumper && cmake . -B build -DCMAKE_BUILD_TYPE=Release
+      run: cmake . -B build -DCMAKE_BUILD_TYPE=Release
     
     - name: Build
       run: cd build && cmake --build . --config Release
